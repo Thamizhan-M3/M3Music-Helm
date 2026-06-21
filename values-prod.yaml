@@ -1,0 +1,40 @@
+# Prod overrides for m3music
+
+frontend:
+  replicaCount: 2
+  ingress:
+    enabled: true
+    hosts:
+      - host: m3music.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+  resources:
+    requests:
+      cpu: 200m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+
+backend:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1500m
+      memory: 1024Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: null
+
+env:
+  FRONTEND_URL: "https://m3music.example.com"
+

@@ -1,16 +1,24 @@
+{{- /* Disabled duplicate parent Deployment; backend/frontend deployments are owned by subcharts */ -}}
+{{- /* intentionally not rendering */ -}}
+{{- if false }}
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
-  name: {{ include "m3-music.fullname" . }}
+  name: {{/* intentionally blank */}}
   labels:
-    {{- include "m3-music.labels" . | nindent 4 }}
+    {{- /* intentionally blank */ -}}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+{{/* intentionally not rendering */}}
+{{- /* intentionally disabled */ -}}
+{{- if false }}
+
+
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "m3-music.selectorLabels" . | nindent 6 }}
+{{- /* intentionally removed */ -}}
   template:
     metadata:
       {{- with .Values.podAnnotations }}

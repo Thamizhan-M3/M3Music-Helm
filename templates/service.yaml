@@ -1,9 +1,16 @@
+{{/* Disabled duplicate parent Service; backend/frontend services are owned by subcharts */}}
+{{- /* intentionally not rendering */ -}}
+{{- if false }}
+
 apiVersion: v1
 kind: Service
+
 metadata:
-  name: {{ include "m3-music.fullname" . }}
+  name: {{ include "m3music.fullname" . }}
   labels:
-    {{- include "m3-music.labels" . | nindent 4 }}
+    {{- include "m3music.labels" . | nindent 4 }}
+
+{{- /* intentionally blank */ -}}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -11,5 +18,8 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  selector:
-    {{- include "m3-music.selectorLabels" . | nindent 4 }}
+      selector:
+    {{- include "m3music.selectorLabels" . | nindent 4 }}
+{{- end }}
+
+
