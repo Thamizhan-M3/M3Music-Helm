@@ -1,0 +1,35 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: YOUR_ECR_FRONTEND
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 80
+
+backend:
+  replicaCount: 1
+  image:
+    repository: YOUR_ECR_BACKEND
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 10000
+
+env:
+  PORT: "10000"
+  FRONTEND_URL: ""
+
+secretEnv:
+  MONGODB_URI: ""
+  JWT_SECRET: ""
+  GOOGLE_PRIVATE_KEY: ""
+
+serviceAccount:
+  create: true
+  automount: true
+
+autoscaling:
+  enabled: false

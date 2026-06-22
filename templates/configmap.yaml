@@ -12,6 +12,4 @@ data:
   GOOGLE_SERVICE_ACCOUNT_EMAIL: {{ .Values.env.GOOGLE_SERVICE_ACCOUNT_EMAIL | quote }}
 
   # Frontend VITE_API_URL (generated in parent; frontend configmap removed)
-VITE_API_URL: "http://{{ include \"m3music.backend.fullname\" . }}:{{ .Values.backend.service.port }}"
-
-
+VITE_API_URL: {{ printf "http://%s:%v" (include "m3music.backend.fullname" .) .Values.backend.service.port | quote }}
