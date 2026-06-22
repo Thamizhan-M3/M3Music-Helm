@@ -44,9 +44,9 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "m3music.fullname" . }}-env
+                name: m3music-m3-music-env
             - secretRef:
-                name: {{ include "m3music.fullname" . }}-secrets
+                name: m3music-m3-music-secrets
           livenessProbe:
             {{- toYaml .Values.backend.livenessProbe | nindent 12 }}
           readinessProbe:
