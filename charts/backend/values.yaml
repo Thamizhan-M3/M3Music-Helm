@@ -1,95 +1,32 @@
-# Default values for m3music.
-# Overrides can be provided via values-dev.yaml / values-prod.yaml
+replicaCount: 1
 
-namespace: m3music
+image:
+  repository: m3music-backend
+  pullPolicy: IfNotPresent
+  tag: ""
 
-frontend:
-  replicaCount: 1
-  image:
-    repository: m3music-frontend
-    pullPolicy: IfNotPresent
-    tag: ""
-  service:
-    type: ClusterIP
-    port: 80
-  resources: {}
-  livenessProbe:
-    httpGet:
-      path: /
-      port: 80
-  readinessProbe:
-    httpGet:
-      path: /
-      port: 80
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
-    hosts:
-      - host: m3music.local
-        paths:
-          - path: /
-            pathType: Prefix
-    tls: []
+service:
+  type: ClusterIP
+  port: 10000
 
-backend:
-  replicaCount: 1
-  image:
-    repository: m3music-backend
-    pullPolicy: IfNotPresent
-    tag: ""
-  service:
-    type: ClusterIP
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /health
     port: 10000
-  resources: {}
-  livenessProbe:
-    httpGet:
-      path: /health
-      port: 10000
-  readinessProbe:
-    httpGet:
-      path: /health
-      port: 10000
 
-# Pod-level
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 10000
+
 imagePullSecrets: []
 
-# Non-sensitive env vars
-env:
-  # Used by backend
-  PORT: "10000"
-  FRONTEND_URL: "http://localhost"
-
-  # Backend Google settings (can be sensitive; keep empty defaults)
-  GOOGLE_DRIVE_FOLDER_ID: ""
-  GOOGLE_SERVICE_ACCOUNT_EMAIL: ""
-
-# Sensitive env vars
-secretEnv:
-  MONGODB_URI: ""
-  JWT_SECRET: ""
-  GOOGLE_PRIVATE_KEY: ""
-
-# Autoscaling (applied to backend and frontend independently)
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: null
-
-# Ingress/service selectors
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  create: true
-  automount: true
-  annotations: {}
-  name: ""
 
 podAnnotations: {}
-podLabels: {}
 
 podSecurityContext: {}
 securityContext: {}
@@ -100,3 +37,6 @@ tolerations: []
 
 affinity: {}
 
+serviceAccount:
+  create: true
+  name: ""

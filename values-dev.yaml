@@ -39,5 +39,4 @@ secretEnv:
   # Fill in real secrets
   MONGODB_URI: ""
   JWT_SECRET: ""
-  GOOGLE_PRIVATE_KEY: ""
 

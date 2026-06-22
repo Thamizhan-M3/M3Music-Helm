@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "m3music.fullname" . }}-env
+  name: {{ include "m3music.configMapName" . }}
   labels:
     {{- include "m3music.labels" . | nindent 4 }}
 data:
-  # Backend non-sensitive env
   PORT: {{ .Values.env.PORT | quote }}
   FRONTEND_URL: {{ .Values.env.FRONTEND_URL | quote }}
   GOOGLE_DRIVE_FOLDER_ID: {{ .Values.env.GOOGLE_DRIVE_FOLDER_ID | quote }}
   GOOGLE_SERVICE_ACCOUNT_EMAIL: {{ .Values.env.GOOGLE_SERVICE_ACCOUNT_EMAIL | quote }}
-
-  # Frontend VITE_API_URL (generated in parent; frontend configmap removed)
-VITE_API_URL: {{ printf "http://%s:%v" (include "m3music.backend.fullname" .) .Values.backend.service.port | quote }}
+  AWS_REGION: {{ .Values.env.AWS_REGION | quote }}
+  S3_BUCKET_NAME: {{ .Values.env.S3_BUCKET_NAME | quote }}
+  S3_PUBLIC_URL: {{ .Values.env.S3_PUBLIC_URL | quote }}
+  VITE_API_URL: {{ printf "http://%s:%v" (include "m3music.backend.fullname" .) .Values.backend.service.port | quote }}

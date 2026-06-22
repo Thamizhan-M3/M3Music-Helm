@@ -1,3 +1,9 @@
+global:
+  nameOverride: m3-music
+  fullnameOverride: ""
+  serviceAccount:
+    name: ""
+
 frontend:
   replicaCount: 1
 
@@ -34,14 +40,19 @@ backend:
 env:
   PORT: "10000"
   FRONTEND_URL: ""
+  AWS_REGION: ""
+  S3_BUCKET_NAME: ""
+  S3_PUBLIC_URL: ""
+  GOOGLE_DRIVE_FOLDER_ID: ""
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: ""
 
 secretEnv:
   MONGODB_URI: ""
   JWT_SECRET: ""
-  GOOGLE_PRIVATE_KEY: ""
 
 serviceAccount:
   create: true
+  annotations: {}
   automount: true
 
 autoscaling:
