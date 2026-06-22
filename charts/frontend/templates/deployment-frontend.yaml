@@ -29,7 +29,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "m3music.serviceAccountName" . }}
+      serviceAccountName: m3music-m3-music
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
