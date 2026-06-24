@@ -1,0 +1,89 @@
+{{- if .Values.networkPolicy.enabled }}
+{{- $db := .Values.networkPolicy.backend.database }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "m3music.fullname" . }}-backend
+  labels:
+    {{- include "m3music.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "m3music.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: backend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "m3music.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/component: frontend
+      ports:
+        - protocol: TCP
+          port: {{ .Values.backend.service.port }}
+  egress:
+    - to:
+        - namespaceSelector:
+            {{- toYaml .Values.networkPolicy.dns.namespaceSelector | nindent 12 }}
+          podSelector:
+            {{- toYaml .Values.networkPolicy.dns.podSelector | nindent 12 }}
+      ports:
+        - protocol: UDP
+          port: {{ .Values.networkPolicy.dns.port }}
+        - protocol: TCP
+          port: {{ .Values.networkPolicy.dns.port }}
+    {{- if $db.cidr }}
+    - to:
+        - ipBlock:
+            cidr: {{ $db.cidr | quote }}
+      ports:
+        - protocol: TCP
+          port: {{ $db.port }}
+    {{- end }}
+    {{- if .Values.networkPolicy.backend.allowInternetEgress }}
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.backend.internetEgressCidr | quote }}
+    {{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "m3music.fullname" . }}-frontend
+  labels:
+    {{- include "m3music.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "m3music.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: frontend
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "m3music.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/component: backend
+      ports:
+        - protocol: TCP
+          port: {{ .Values.backend.service.port }}
+    - to:
+        - namespaceSelector:
+            {{- toYaml .Values.networkPolicy.dns.namespaceSelector | nindent 12 }}
+          podSelector:
+            {{- toYaml .Values.networkPolicy.dns.podSelector | nindent 12 }}
+      ports:
+        - protocol: UDP
+          port: {{ .Values.networkPolicy.dns.port }}
+        - protocol: TCP
+          port: {{ .Values.networkPolicy.dns.port }}
+{{- end }}

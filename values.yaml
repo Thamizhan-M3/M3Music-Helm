@@ -12,9 +12,56 @@ frontend:
     tag: latest
     pullPolicy: Always
 
+  containerPort: 8080
+
   service:
     type: ClusterIP
     port: 80
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 8080
+
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    failureThreshold: 30
+    periodSeconds: 5
+
+  pdb:
+    enabled: true
+    minAvailable: 1
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+    runAsGroup: 101
+    fsGroup: 101
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+    runAsGroup: 101
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
 
   ingress:
     enabled: false
@@ -37,6 +84,47 @@ backend:
     type: ClusterIP
     port: 10000
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 10000
+
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 10000
+
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 10000
+    failureThreshold: 30
+    periodSeconds: 5
+
+  pdb:
+    enabled: true
+    minAvailable: 1
+
+  podSecurityContext:
+    runAsNonRoot: true
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+
 env:
   PORT: "10000"
   FRONTEND_URL: ""
@@ -57,3 +145,19 @@ serviceAccount:
 
 autoscaling:
   enabled: false
+
+networkPolicy:
+  enabled: true
+  dns:
+    namespaceSelector: {}
+    podSelector:
+      matchLabels:
+        k8s-app: kube-dns
+    port: 53
+  backend:
+    database:
+      # Terraform sets this to the EC2 MongoDB private IP as a /32 CIDR.
+      cidr: ""
+      port: 27017
+    allowInternetEgress: true
+    internetEgressCidr: 0.0.0.0/0

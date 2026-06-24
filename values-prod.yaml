@@ -12,21 +12,49 @@ frontend:
     tls: []
   resources:
     requests:
-      cpu: 200m
+      cpu: 100m
       memory: 128Mi
     limits:
-      cpu: 1000m
+      cpu: 500m
       memory: 512Mi
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 8080
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    failureThreshold: 30
+    periodSeconds: 5
 
 backend:
   replicaCount: 2
   resources:
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 100m
+      memory: 128Mi
     limits:
-      cpu: 1500m
-      memory: 1024Mi
+      cpu: 500m
+      memory: 512Mi
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 10000
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 10000
+  startupProbe:
+    httpGet:
+      path: /healthz
+      port: 10000
+    failureThreshold: 30
+    periodSeconds: 5
 
 autoscaling:
   enabled: true
@@ -37,4 +65,11 @@ autoscaling:
 
 env:
   FRONTEND_URL: "https://m3music.example.com"
+
+networkPolicy:
+  enabled: true
+  backend:
+    database:
+      cidr: "" # Set to the EC2 MongoDB private IP as /32, for example 10.0.31.10/32.
+      port: 27017
 

@@ -1,0 +1,33 @@
+{{- if and .Values.frontend.pdb.enabled (or .Values.autoscaling.enabled (gt (int .Values.frontend.replicaCount) 1)) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "m3music.frontend.fullname" . }}
+  labels:
+    {{- include "m3music.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  minAvailable: {{ .Values.frontend.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "m3music.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: frontend
+{{- end }}
+{{- if and .Values.backend.pdb.enabled (or .Values.autoscaling.enabled (gt (int .Values.backend.replicaCount) 1)) }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "m3music.backend.fullname" . }}
+  labels:
+    {{- include "m3music.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  minAvailable: {{ .Values.backend.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "m3music.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: backend
+{{- end }}

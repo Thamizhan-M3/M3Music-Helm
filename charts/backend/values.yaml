@@ -9,17 +9,34 @@ service:
   type: ClusterIP
   port: 10000
 
-resources: {}
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
 
 livenessProbe:
   httpGet:
-    path: /health
+    path: /healthz
     port: 10000
 
 readinessProbe:
   httpGet:
-    path: /health
+    path: /ready
     port: 10000
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: 10000
+  failureThreshold: 30
+  periodSeconds: 5
+
+pdb:
+  enabled: true
+  minAvailable: 1
 
 imagePullSecrets: []
 
@@ -28,8 +45,16 @@ autoscaling:
 
 podAnnotations: {}
 
-podSecurityContext: {}
-securityContext: {}
+podSecurityContext:
+  runAsNonRoot: true
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
 
 nodeSelector: {}
 
