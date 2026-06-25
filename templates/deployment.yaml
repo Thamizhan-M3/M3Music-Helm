@@ -1,1 +1,0 @@
-{{- /* Parent deployment disabled. Backend and frontend are deployed by subcharts. */ -}}

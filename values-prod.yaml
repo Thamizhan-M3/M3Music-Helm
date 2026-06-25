@@ -1,5 +1,3 @@
-# Prod overrides for m3music
-
 frontend:
   replicaCount: 2
   ingress:
@@ -70,6 +68,6 @@ networkPolicy:
   enabled: true
   backend:
     database:
-      cidr: "" # Set to the EC2 MongoDB private IP as /32, for example 10.0.31.10/32.
+      cidr: ""
       port: 27017
 

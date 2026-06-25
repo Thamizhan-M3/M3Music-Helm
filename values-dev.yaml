@@ -1,5 +1,3 @@
-# Dev overrides for m3music
-
 frontend:
   replicaCount: 1
   ingress:
@@ -31,7 +29,6 @@ backend:
 autoscaling:
   enabled: false
 
-# Provide env via helm --set or by editing these values for your cluster.
 env:
   FRONTEND_URL: "http://m3music-dev.local"
 

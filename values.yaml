@@ -156,7 +156,6 @@ networkPolicy:
     port: 53
   backend:
     database:
-      # Terraform sets this to the EC2 MongoDB private IP as a /32 CIDR.
       cidr: ""
       port: 27017
     allowInternetEgress: true

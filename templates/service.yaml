@@ -1,1 +1,0 @@
-{{- /* Parent service disabled. Backend and frontend services are deployed by subcharts. */ -}}
